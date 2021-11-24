@@ -1,4 +1,4 @@
-def getFirstAlpha(first, alpha, tFirst):
+def getFirstOfAlpha(first, alpha, tFirst):
     c = alpha[0]
     if (ord(c) >= 33 and ord(c) <= 64) or (ord(c) >= 91 and ord(c) <= 126):
         tFirst = tFirst | {c}
@@ -11,7 +11,7 @@ def getFirstAlpha(first, alpha, tFirst):
             if alpha[i:] == "":
                 tFirst = tFirst | {"#"}
                 break
-            f = set(getFirstAlpha(first, alpha[i:], tFirst))
+            f = set(getFirstOfAlpha(first, alpha[i:], tFirst))
             tFirst = tFirst | (f - {"#"})
             i += 1
     else:
@@ -33,7 +33,7 @@ def getFollow(first, follow, completed, productions, lhs):
                                 follow_set = follow_set.union(getFollow(first, follow, completed, productions, i))
                         else:
                             temp = set()
-                            temp = temp | set(getFirstAlpha(first, j[idx+1:], temp))
+                            temp = temp | set(getFirstOfAlpha(first, j[idx+1:], temp))
                             tFirst = list(temp)
                             if "#" not in tFirst:
                                 follow_set = follow_set.union(tFirst)
