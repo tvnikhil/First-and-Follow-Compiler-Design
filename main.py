@@ -1,18 +1,21 @@
+import json
 import FIRST
 import FOLLOW
 
+# INPUT
 n = int(input())
 productions = {}
 for i in range(0, n):
     inpPro = input()
     inpPro = list(inpPro.split("->"))
     productions[inpPro[0]] = list(inpPro[1].split("|"))
-print("First for the grammar is ")
+
+# Finding First
 first = FIRST.First(productions)
-for i in first:
-    print(i, ":", first[i])
-print()
-print("Follow for the grammar is ")
+# Finding follow
 follow = FOLLOW.Follow(productions, first)
-for i in follow:
-    print(i, ":", follow[i])
+
+# OUTPUT
+print("First and follow for the Non terminals are:")
+for i in productions:
+    print(i, " --- ", "First:", first[i], "Follow: ", follow[i])

@@ -1,4 +1,6 @@
 def getFirstOfAlpha(first, alpha, tFirst):
+    if len(alpha) == 0:
+        return set()
     c = alpha[0]
     if (ord(c) >= 33 and ord(c) <= 64) or (ord(c) >= 91 and ord(c) <= 126):
         tFirst = tFirst | {c}
@@ -25,20 +27,18 @@ def getFollow(first, follow, completed, productions, lhs):
     for i in productions:
         rhs = productions[i]
         for j in rhs:
-            if j != "#":
-                for idx in range(0, len(j)):
-                    if j[idx] == lhs:
-                        if idx + 1 == len(j):
-                            if i != j[idx]:
-                                follow_set = follow_set.union(getFollow(first, follow, completed, productions, i))
+            for idx in range(0, len(j)):
+                if j[idx] == lhs:
+                    if idx + 1 == len(j) and i != j[idx]:
+                        follow_set = follow_set.union(getFollow(first, follow, completed, productions, i))
+                    else:
+                        temp = set()
+                        temp = temp | set(getFirstOfAlpha(first, j[idx+1:], temp))
+                        tFirst = list(temp)
+                        if "#" not in tFirst:
+                            follow_set = follow_set.union(tFirst)
                         else:
-                            temp = set()
-                            temp = temp | set(getFirstOfAlpha(first, j[idx+1:], temp))
-                            tFirst = list(temp)
-                            if "#" not in tFirst:
-                                follow_set = follow_set.union(tFirst)
-                            else:
-                                follow_set = follow_set.union((set(tFirst) - set("#")).union(getFollow(first, follow, completed, productions, i)))
+                            follow_set = follow_set.union((set(tFirst) - set("#")).union(getFollow(first, follow, completed, productions, i)))
     follow[lhs] = list(set(follow[lhs]) | follow_set)
     completed[lhs] = 1
     return set(follow[lhs])
@@ -49,8 +49,7 @@ def Follow(productions, first):
     for i in productions:
         completed[i] = 0
         follow[i] = []
-    startSymbol = list(productions.keys())[0]
-    follow[startSymbol].append("$")
+    follow[list(productions.keys())[0]].append("$")
     for lhs in productions:
         getFollow(first, follow, completed, productions, lhs)
     return follow
