@@ -1,1 +1,1 @@
-# Compiler Design Course Based Project
+# First and follow functions in python | Compiler design
